@@ -1,6 +1,7 @@
 import arg from 'arg';
+import inquirer, { DistinctQuestion } from 'inquirer';
 
-import { Options } from '../typings';
+import { Answers, Options } from '../typings';
 import { ARGUMENTS, ALIAS } from '../utils/constants';
 
 function parseArgumentsIntoOptions(rawArgs: string[]): Options{
@@ -18,8 +19,16 @@ function parseArgumentsIntoOptions(rawArgs: string[]): Options{
         git :  args[ARGUMENTS.GIT] !! ,
         skipPrompts : args[ARGUMENTS.YES] !!,
         runInstall : args[ARGUMENTS.INSTALL] !!,
-        template,
-        targetDir
+        template: args._[0],
+        targetDir: process.cwd()
+    };
+}
+
+async function promptForMissingOptions(options: Options): Promise<Options>{
+    const questions: DistinctQuestion[] = [];
+    const answers = await inquirer.prompt<Answers>(questions);
+    return {
+        ...options
     };
 }
 
